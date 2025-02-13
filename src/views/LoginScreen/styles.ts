@@ -10,11 +10,10 @@ export const Container = styled(LinearGradient).attrs((props) => ({
   height: 100%;
   padding: ${remToPx(3.75)}px ${remToPx(1.5)}px;
   justify-content: space-between;
+  position: relative;
 `;
 
-export const Box = styled.View`
-
-`;
+export const Box = styled.View``;
 
 export const Title = styled.Text`
   font-weight: 600;
@@ -43,3 +42,17 @@ export const Forgot = styled.View`
   align-items: flex-end;
 `;
 
+export const Popup = styled.View`
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: ${({ theme }) => theme.colors.accent};
+  height: 60px;
+  width: 80%;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+`;

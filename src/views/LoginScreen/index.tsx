@@ -1,34 +1,52 @@
-import React from "react";
-import { Box, Container, Forgot, Form, Subtitle, Title } from "./styles";
+import React, { useEffect, useState } from "react";
+import { Box, Container, Forgot, Form, Popup, Subtitle, Title } from "./styles";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { storage } from "../../storage";
 
-type RootStackParamList = {
-  Login: undefined;
-  Home: undefined;
-  Forecast: undefined
-};
-
-type LoginScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Login"
->;
+type LoginScreenNavigationProp = StackNavigationProp<Route, "Login">;
 
 const LoginScreen = () => {
+  const user = {
+    email: "junior@gmail.com",
+    password: "junior1234",
+  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const onHandleEmail = (e) => {
-    console.log(e);
+    setEmail(e);
   };
   const onHandlePassword = (e) => {
-    console.log(e);
+    setPassword(e);
   };
 
   const checkLogin = () => {
-    navigation.navigate("Forecast");
+    if (email === "" || password === "") {
+      setShowAlert(true);
+      setAlert("Por favor preencha os campos de email e senha");
+    } else if (email === user.email && password === user.password) {
+      storage.set("auth", true);
+      navigation.navigate("Home");
+    } else {
+      setShowAlert(true);
+      setAlert("Email ou senha incorretos");
+    }
   };
 
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
   return (
     <Container>
       <Box>
@@ -55,6 +73,11 @@ const LoginScreen = () => {
       <Box>
         <Button text="Entrar" onPress={checkLogin} />
       </Box>
+      {showAlert && (
+        <Popup>
+          <Subtitle>{alert}</Subtitle>
+        </Popup>
+      )}
     </Container>
   );
 };
